@@ -20,9 +20,9 @@ class User {
         if (!this.lastMessageSent) {
             return true;
         }
-        // if the user has not sent a message in the last 5 minutes
+        // if the user has not sent a message in the last 1 minute
         const minutesAfterLastMessage = (currentTime.getTime() - this.lastMessageSent.getTime()) / 1000 / 60;
-        if (minutesAfterLastMessage >= 5) {
+        if (minutesAfterLastMessage >= 1) {
             return true;
         }
         return false;
@@ -157,7 +157,11 @@ function sendMessage(message: string, channel?: TextChannel | null) {
     if (!textChannel) {
         throw new Error("Channel not found");
     }
-    textChannel.send(message);
+    textChannel.send(message).then(sentMessage => {
+        setTimeout(() => {
+            sentMessage.delete();
+        }, 1 * 60 * 1000);
+    });
 }
 
 /**
